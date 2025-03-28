@@ -6,15 +6,6 @@ import { motion } from 'framer-motion'
 // Define layout types
 type LayoutType = 'default' | 'two-column' | 'narrative' | 'summary' | 'contrast'
 
-// Mapping of special layout rendering functions
-const layoutRenderers: Record<LayoutType, React.FC<{ slide: Slide }>> = {
-  default: DefaultLayout,
-  'two-column': TwoColumnLayout,
-  'narrative': NarrativeLayout,
-  'summary': SummaryLayout,
-  'contrast': ContrastLayout
-}
-
 // Animated Bullet Renderer (from previous implementation)
 function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
   const containerVariants = {
@@ -23,9 +14,9 @@ function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
       opacity: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   }
 
   const itemVariants = {
@@ -36,9 +27,9 @@ function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
       transition: {
         type: "spring",
         damping: 12,
-        stiffness: 200
-      }
-    }
+        stiffness: 200,
+      },
+    },
   }
 
   return (
@@ -72,9 +63,7 @@ function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
                   variants={containerVariants}
                   className="list-disc list-inside ml-5 text-sm text-gray-700 space-y-2 mt-2"
                 >
-                  {
-                    //@ts-ignore
-                  item.subBullets.map((sub, subIndex) => (
+                  {item.subBullets.map((sub, subIndex) => (
                     <motion.li 
                       key={subIndex} 
                       variants={itemVariants}
@@ -112,53 +101,23 @@ function DefaultLayout({ slide }: { slide: Slide }) {
 
 // Two-column layout for complex content
 function TwoColumnLayout({ slide }: { slide: Slide }) {
-    // Ensure we have exactly two top-level bullet points for two-column layout
-    const bulletPoints = slide.content.bullets.filter(
-      item => typeof item === 'object' && 'bullet' in item
-    )
-  
-    return (
-      <div className="grid grid-cols-3 gap-5 p-4">
-        {bulletPoints.map((item, index) => (
-          <motion.div 
-            key={index}
-            initial={{ opacity: 0, x: index === 0 ? -50 : 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 shadow-sm"
-          >
-            <h3 className="font-semibold text-xl text-blue-900 mb-4 border-b border-blue-200 pb-3">
-              {typeof item === 'object' && 'bullet' in item ? item.bullet : ''}
-            </h3>
-            {typeof item === 'object' && 'subBullets' in item && (
-              <motion.ul 
-                initial="hidden"
-                animate="visible"
-                className="list-disc list-inside text-gray-800 space-y-3"
-              >
-                {(item.subBullets as string[]).map((subBullet, subIndex) => (
-                  <motion.li
-                    key={subIndex}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      delay: subIndex * 0.1, 
-                      type: "spring",
-                      damping: 12,
-                      stiffness: 200 
-                    }}
-                    className="text-base leading-relaxed hover:bg-blue-50/30 p-2 rounded-lg transition-all duration-300 ease-in-out"
-                  >
-                    {subBullet}
-                  </motion.li>
-                ))}
-              </motion.ul>
-            )}
-          </motion.div>
-        ))}
+  // Split all bullet items (whether string or object) into two columns
+  const bullets = slide.content.bullets;
+  const half = Math.ceil(bullets.length / 2);
+  const leftBullets = bullets.slice(0, half);
+  const rightBullets = bullets.slice(half);
+
+  return (
+    <div className="grid grid-cols-2 gap-6 p-4">
+      <div>
+        <AnimatedBulletRenderer bullets={leftBullets} />
       </div>
-    )
-  }
+      <div>
+        <AnimatedBulletRenderer bullets={rightBullets} />
+      </div>
+    </div>
+  )
+}
 
 // Narrative layout for storytelling slides
 function NarrativeLayout({ slide }: { slide: Slide }) {
@@ -196,7 +155,7 @@ function SummaryLayout({ slide }: { slide: Slide }) {
   )
 }
 
-// Contrast layout for comparison slides
+// Contrast layout for comparison slides with alternating colors
 function ContrastLayout({ slide }: { slide: Slide }) {
   return (
     <motion.div 
@@ -209,54 +168,70 @@ function ContrastLayout({ slide }: { slide: Slide }) {
         {slide.content.heading}
       </h3>
       <div className="grid grid-cols-2 gap-6">
-        {slide.content.bullets
-          .filter(item => typeof item === 'object' && 'bullet' in item)
-          .map((item, index) => {
-            if (typeof item === 'string') return null
-            return (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100/50 transition"
-              >
-                <h4 className="font-semibold text-lg mb-3 text-blue-800">
-                  {item.bullet}
-                </h4>
-                {item.subBullets && (
-                  <ul className="list-disc list-inside text-gray-700 space-y-2">
-                    {item.subBullets.map((sub, subIndex) => (
-                      <li key={subIndex} className="text-base">
-                        {sub}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </motion.div>
-            )
-          })}
+        {slide.content.bullets.map((item, index) => {
+          // Alternate background and text colors for contrast.
+          const bgClass = index % 2 === 0 ? "bg-blue-100" : "bg-yellow-100";
+          const textClass = index % 2 === 0 ? "text-blue-900" : "text-yellow-900";
+          return (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              className={`${bgClass} p-4 rounded-lg shadow-md hover:opacity-80 transition`}
+            >
+              {typeof item === 'object' ? (
+                <>
+                  <h4 className={`font-semibold text-lg mb-3 ${textClass}`}>
+                    {item.bullet}
+                  </h4>
+                  {item.subBullets && (
+                    <ul className="list-disc list-inside space-y-2">
+                      {item.subBullets.map((sub, subIndex) => (
+                        <li key={subIndex} className="text-base">
+                          {sub}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : (
+                <p className={`font-semibold text-lg ${textClass}`}>{item}</p>
+              )}
+            </motion.div>
+          )
+        })}
       </div>
     </motion.div>
   )
 }
 
-// Determine layout based on slide properties and content
+// Mapping of special layout rendering functions
+const layoutRenderers: Record<LayoutType, React.FC<{ slide: Slide }>> = {
+  default: DefaultLayout,
+  'two-column': TwoColumnLayout,
+  'narrative': NarrativeLayout,
+  'summary': SummaryLayout,
+  'contrast': ContrastLayout,
+}
+
+// Determine layout based on slide properties and content.
+// First, use the layout defined in the slide data (if any).
 function determineLayout(slide: Slide): LayoutType {
+  if (slide.content.layout) return slide.content.layout as LayoutType;
   // Special layout logic based on slide content
   if (slide.id === 1) return 'narrative' // Cover slide
   if (slide.id === 2) return 'summary' // Agenda slide
   if (slide.id === 13 || slide.id === 18) return 'summary' // Overview and summary slides
   if (slide.id >= 14 && slide.id <= 17) return 'contrast' // Comparison slides
-  if (slide.content.bullets.some(item => 
-    typeof item === 'object' && 
-    'subBullets' in item && 
-    item.subBullets && 
+  if (slide.content.bullets.some(item =>
+    typeof item === 'object' &&
+    'subBullets' in item &&
+    item.subBullets &&
     item.subBullets.length > 2
   )) return 'two-column'
   return 'default'
 }
-
 
 export default function SlideCard({ slide }: { slide: Slide }) {
   const layoutType = determineLayout(slide)
@@ -268,12 +243,17 @@ export default function SlideCard({ slide }: { slide: Slide }) {
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <Card className="border border-blue-100 shadow-2xl hover:shadow-3xl transform transition duration-300 w-[1600px] h-[800px] overflow-hidden">
+      <Card className="border border-blue-100 shadow-2xl hover:shadow-3xl transform transition duration-300 w-full h-full overflow-hidden">
         <CardHeader className="bg-blue-50/50 p-4 border-b border-blue-100">
           <CardTitle className="text-blue-800 text-2xl font-bold tracking-tight">
             {slide.title}
           </CardTitle>
         </CardHeader>
+        {slide.images && slide.images.length > 0 && (
+          <div className="w-full p-4">
+            <img src={slide.images[0]} alt={slide.title} className="mx-auto" />
+          </div>
+        )}
         <CardContent className="p-6 space-y-4 overflow-y-auto max-h-[720px]">
           <LayoutComponent slide={slide} />
         </CardContent>

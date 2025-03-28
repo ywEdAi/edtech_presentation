@@ -65,8 +65,8 @@ public/
 next.config.ts
 package.json
 postcss.config.js
-postcss.config.mjs
 README.md
+tailwind.config.js
 tsconfig.json
 </directory_structure>
 
@@ -177,71 +177,6 @@ export default function FlashCard({ front, back }: FlashCardProps) {
 }
 </file>
 
-<file path="components/SlideCard.tsx">
-import { Slide } from '@/lib/slides'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import Image from 'next/image'
-
-type Props = {
-  slide: Slide
-}
-
-export default function SlideCard({ slide }: Props) {
-  return (
-    <Card className="border border-gray-100 hover:shadow-2xl hover:scale-105 transform transition w-full">
-      <CardHeader>
-        <CardTitle className="text-blue-600 text-xl font-bold">
-          {slide.title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col space-y-3">
-
-        {/* 如果有图片数组，展示它们 */}
-        {slide.images && slide.images.length > 0 && (
-          <div className="flex flex-wrap gap-4">
-            {slide.images.map((imgUrl, i) => (
-              <div key={i} className="relative w-48 h-32 rounded-md overflow-hidden">
-                <Image
-                  src={imgUrl}
-                  alt={`Slide ${slide.id} image ${i}`}
-                  fill  // 或者用 width/height + objectFit
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* 主要展示内容 */}
-        <h3 className="font-semibold text-lg text-gray-800">
-          {slide.content.heading}
-        </h3>
-        <ul className="list-disc list-inside text-gray-700 space-y-1">
-          {slide.content.bullets.map((item, index) => {
-            if (typeof item === 'string') {
-              return <li key={index}>{item}</li>
-            } else {
-              return (
-                <li key={index}>
-                  {item.bullet}
-                  {item.subBullets && (
-                    <ul className="list-disc list-inside ml-5 text-sm text-gray-600 space-y-1 mt-1">
-                      {item.subBullets.map((sub, subIndex) => (
-                        <li key={subIndex}>{sub}</li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              )
-            }
-          })}
-        </ul>
-      </CardContent>
-    </Card>
-  )
-}
-</file>
-
 <file path="lib/slides.ts">
 // lib/slides.ts
 export type Slide = {
@@ -249,66 +184,69 @@ export type Slide = {
     title: string
     content: {
       heading: string
-      bullets: Array<string | { bullet: string; subBullets?: string[] }>
+      layout?: 'default' | 'two-column' | 'narrative' | 'summary' | 'contrast'
+      bullets: Array<
+        | string
+        | {
+            bullet: string
+            subBullets?: string[]
+          }
+      >
     }
+    images?: string[] // Optional images for future use
   }
+  
   
   export const slides: Slide[] = [
     {
-      id: 1,
-      title: 'Slide 1. 封面',
-      content: {
-        heading: '主要展示内容',
-        bullets: [
-          '标题：独立开发与小团队在 AI+教育中的创新实践',
-          '副标题：从产品开发模式到“知识审美”的教育思考',
-          '演讲者信息：XXX（你的名字 / 职称 / 机构）; 哥伦比亚大学教育论坛，20XX年XX月XX日',
-        ],
+        id: 1,
+        title: '',
+        content: {
+          heading: '独立开发与小团队在 AI+教育中的创新实践',
+          layout: 'narrative', // Explicitly set layout for cover slide
+          bullets: [
+            '技术 × 教育学：用 TPACK 框架赋能生成式 AI 时代',
+            '从产品开发模式到"知识审美"的教育思考',
+            {
+              bullet: '伊伊子',
+              subBullets: ['小红书', '公众号', 'Youtube'],
+            },
+          ],
+        },
       },
-    },
-    {
-      id: 2,
-      title: 'Slide 2. 议程 / Agenda',
-      content: {
-        heading: '主要展示内容',
-        bullets: [
-          {
-            bullet: '引言与背景：AI 与教育的交汇',
-          },
-          {
-            bullet: '技术与教育学的结合',
-            subBullets: [
-              'TPACK 框架',
-              'TPACK 在 GenAI 时代的应用',
-            ],
-          },
-          {
-            bullet: '产品开发关键模式与市场演变',
-            subBullets: [
-              '技术驱动 vs. 数据驱动',
-              '小团队 vs. 大团队',
-              '个人需求驱动 vs. 市场调研驱动',
-              '“套壳”短期效应 vs. 长期价值',
-              'Pre-PMF 阶段的挑战与策略',
-            ],
-          },
-          {
-            bullet: '知识审美：AI 时代的教育哲思',
-          },
-          {
-            bullet: '人文与思维的发散性讨论（四组对照）',
-          },
-          {
-            bullet: '总结与 Q&A',
-          },
-        ],
+      {
+        id: 2,
+        title: ' 议程 / Agenda',
+        content: {
+          heading: '',
+          layout: 'summary', // Explicitly set layout for agenda slide
+          bullets: [
+            '引言与背景：AI 与教育的交汇',
+            {
+              bullet: '技术与教育学的结合',
+              subBullets: ['TPACK 框架', 'TPACK 在 GenAI 时代的应用'],
+            },
+            {
+              bullet: '产品开发关键模式与市场演变',
+              subBullets: [
+                '技术驱动 vs. 数据驱动',
+                '小团队 vs. 大团队',
+                '个人需求驱动 vs. 市场调研驱动',
+                '"套壳"短期效应 vs. 长期价值',
+                'Pre-PMF 阶段的挑战与策略',
+              ],
+            },
+            '知识审美：AI 时代的教育哲思',
+            '人文与思维的发散性讨论（四组对照）',
+            '总结与 Q&A',
+          ],
+        },
       },
-    },
     {
       id: 3,
-      title: 'Slide 3. 引言与背景：AI 与教育的交汇',
+      title: 'AI 与教育的交汇',
       content: {
-        heading: '主要展示内容',
+        heading: '',
         bullets: [
           {
             bullet: 'AI 在教育：寒武纪大爆发',
@@ -327,7 +265,326 @@ export type Slide = {
         ],
       },
     },
-    // ...可按同样格式添加剩余Slide 4 ~ Slide 18
+    {
+      id: 4,
+      title: '技术与教育学的结合：TPACK 框架',
+      content: {
+        heading: '主要展示内容',
+        bullets: [
+          {
+            bullet: 'TPACK 三大核心要素：',
+            subBullets: [
+              'T: Technological Knowledge（技术知识）',
+              'P: Pedagogical Knowledge（教学法知识）',
+              'C: Content Knowledge（学科内容知识）',
+            ],
+          },
+          '核心理念：三者交融，共同构建有深度且有温度的教育应用',
+          
+        ],
+      },
+      images: ["/public/TPACK.png"]
+      
+    },
+    {
+      id: 5,
+      title: ' TPACK 在 GenAI 时代的应用',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: 'GenAI 应用场景：',
+            subBullets: [
+              '对话式大模型 + 教学设计（利用 Prompt Engineering 与思维链实现启发式引导）',
+              '知识图谱 + 学科概念（降低大模型“幻觉”，确保知识准确性）',
+              '示例：将 AI 定位为“助教”而非“代写者”',
+            ],
+          },
+          '目标：兼顾个性化与深度学习',
+        ],
+      },
+    },
+    {
+      id: 6,
+      title: '产品开发关键模式 (1)：技术驱动 vs. 数据驱动',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '技术驱动：',
+            subBullets: [
+              '由 AI 专家/工程师主导',
+              '先研究前沿模型，再匹配教育场景',
+              '优势：算法领先、功能创新',
+              '挑战：场景契合度、用户教育认同',
+            ],
+          },
+          {
+            bullet: '数据驱动：',
+            subBullets: [
+              '基于海量题库与学生作答数据',
+              '数据优势决定产品精准性与定制化',
+              '曾是大机构独占优势，但大模型时代壁垒逐渐弱化',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: 7,
+      title: '产品开发关键模式 (2)：小团队 vs. 大团队',
+      content: {
+        heading: '',
+        layout: 'contrast', 
+        bullets: [
+          {
+            bullet: '小团队/创业公司：',
+            subBullets: [
+              '规模精简、决策迅速',
+              '追求“快速迭代”与 MVP 上线',
+              '借助套壳大模型抢占细分领域',
+              '风险：资金有限、易被复制或收编',
+            ],
+          },
+          {
+            bullet: '大团队/大公司：',
+            subBullets: [
+              '拥有雄厚资金与庞大用户基础',
+              '采用合作研发/自研模型及全家桶生态',
+              '优势：资源整合、大规模推广',
+              '问题：创新节奏较慢、审批流程冗长',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: 8,
+      title: '产品开发关键模式 (3)：个人需求驱动 vs. 市场调研驱动',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '个人需求驱动：',
+            subBullets: [
+              '基于创始人自身痛点（教师、家长、学生）开发',
+              '使命感强，贴合真实场景',
+              '风险：易局限于小圈子，存在自嗨式开发',
+            ],
+          },
+          {
+            bullet: '市场调研驱动：',
+            subBullets: [
+              '依靠广泛用户反馈与数据验证',
+              '确保产品与市场契合（PMF）',
+              '风险：投入大，验证周期长',
+            ],
+          },
+          '要点：真实痛点最终回归教育本质',
+        ],
+      },
+    },
+    {
+      id: 9,
+      title: '“套壳”产品：短期效应 vs. 长期价值',
+      content: {
+        heading: '',
+        bullets: [
+          '“套壳”定义：直接调用现成大模型，包装以场景化 UI',
+          {
+            bullet: '短期优势：',
+            subBullets: ['快速上线、抢占先机', '研发成本低'],
+          },
+          {
+            bullet: '长期挑战：',
+            subBullets: ['护城河不深，易被复制', '需深度融合教育内容及自研技术'],
+          },
+          '演变路径：先套壳 → 获用户与需求验证 → 再深耕内容、算法与交互',
+        ],
+      },
+    },
+    {
+      id: 10,
+      title: '初创公司 Pre-PMF 阶段：挑战与策略',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '定位难：',
+            subBullets: [
+              '学校、培训机构、家长、学生群体诉求各异',
+              '建议：小范围试点，快速获取真实反馈',
+            ],
+          },
+          {
+            bullet: '资源有限：',
+            subBullets: ['小团队人少钱少', '建议：聚焦核心功能，做到极致'],
+          },
+          {
+            bullet: '竞争激烈：',
+            subBullets: [
+              '同质化严重，需独特数据、渠道或技术',
+              '建议：双轨策略——传统业务产生现金流反哺 AI 产品迭代',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: 11,
+      title: '知识审美：AI 时代的教育哲思',
+      content: {
+        heading: '',
+        layout: 'summary', 
+        bullets: [
+          '核心问题：当 AI 可批量生成信息时，人类为何还要学习？',
+          {
+            bullet: '知识审美定义：',
+            subBullets: [
+              '对智力成就或思想创造的感知与欣赏',
+              '不仅掌握功能，更体验背后逻辑、意境与结构之美',
+            ],
+          },
+          {
+            bullet: '重要性：',
+            subBullets: [
+              '在功利学习稀释时，热爱与钻研者更闪耀',
+              'AI 无法替代人类对美感与深度思考的体悟',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: 12,
+      title: '教育本质：以人为本',
+      content: {
+        heading: '',
+        bullets: [
+          '关注学生内心与学习情感',
+          '深度教学设计',
+          '批判思维与创造力培养',
+          '对知识的尊重与热爱',
+          '若只追求效率，易陷浅层；坚守审美，则 AI+教育更有温度与灵魂',
+        ],
+      },
+    },
+    {
+        id: 13,
+        title: '人文与思维的发散性讨论（概览）',
+        content: {
+          heading: '',
+          layout: 'summary', // Explicitly set layout for overview slide
+          bullets: [
+            {
+              bullet: '四组核心对照：',
+              subBullets: [
+                '乐观者 vs. 悲观者',
+                'Researcher vs. Engineer',
+                '痛苦教育 vs. 快乐教育',
+                '黑暗森林法则：低调潜行 vs. 借势爆发',
+              ],
+            },
+          ],
+        },
+      },
+      {
+        id: 14,
+        title: ' (1) 乐观者 vs. 悲观者',
+        content: {
+          heading: '',
+          layout: 'contrast', // Explicitly set layout for comparison slide
+          bullets: [
+            {
+              bullet: '乐观者：',
+              subBullets: ['相信 AI 能重塑教育公平，扩充教学资源', '策略："先行动，再优化"'],
+            },
+            {
+              bullet: '悲观者：',
+              subBullets: ['担心 AI 让学生失去独立思考，教师被替代', '策略："问题太多，也懒得折腾"'],
+            },
+            '平衡点：怀抱激情同时保持清醒，先做 Demo，再迭代优化',
+          ],
+        },
+      },
+    {
+      id: 15,
+      title: '(2) Researcher vs. Engineer',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '研究者：',
+            subBullets: ['追求严谨，重视统计显著性与可控实验', '慎重迭代，倾向长周期验证'],
+          },
+          {
+            bullet: '工程师：',
+            subBullets: ['关注用户留存与商业可行性，追求快速上线', '接受一定混沌与不完美'],
+          },
+          '互补优势：研究者提供可信度，工程师促使成果落地规模化',
+        ],
+      },
+    },
+    {
+      id: 16,
+      title: '(3) 痛苦教育 vs. 快乐教育',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '痛苦教育：',
+            subBullets: ['依赖艰苦训练、刷题确保成绩', '担心 AI 导致学生偷懒'],
+          },
+          {
+            bullet: '快乐教育：',
+            subBullets: ['强调兴趣激发、游戏化与项目式学习', '但无挑战则学习深度受限'],
+          },
+          {
+            bullet: 'AI 的作用：',
+            subBullets: ['替代重复劳动，让师生专注于思维创新', '同时需监管以防“一键作业”'],
+          },
+        ],
+      },
+    },
+    {
+      id: 17,
+      title: '(4) 黑暗森林法则：低调潜行 vs. 借势爆发',
+      content: {
+        heading: '',
+        bullets: [
+          {
+            bullet: '低调潜行：',
+            subBullets: ['担心被大公司抄袭，选择小范围打磨产品', '构建忠实用户社群'],
+          },
+          {
+            bullet: '借势爆发：',
+            subBullets: ['高调宣传抢占市场、吸引投资与用户', '符合教育公益属性，助力更多师生'],
+          },
+          '关键：审时度势，既保护核心技术又注重开放合作',
+        ],
+      },
+    },
+    {
+        id: 18,
+        title: '总结 & Q&A',
+        content: {
+          heading: '',
+          layout: 'summary', // Explicitly set layout for conclusion slide
+          bullets: [
+            {
+              bullet: '结语要点：',
+              subBullets: [
+                'AI 赋能教育：从寒武纪大爆发到理性深耕',
+                'TPACK 模型：技术 × 教学法 × 学科内容缺一不可',
+                '产品开发路径：从"套壳"快跑到深度融合，聚焦真实需求',
+                '知识审美：在信息泛滥时代守住教育灵魂',
+                '人文思辨：在多组对照中寻求平衡',
+              ],
+            },
+            '结束语： "教育的核心，永远是对人的关怀与启迪。AI 只是工具，看我们如何使用它。"',
+          ],
+        },
+      },
   ]
 </file>
 
@@ -336,121 +593,6 @@ export type Slide = {
 export function cn(...classes: (string | undefined | false)[]): string {
     return classes.filter(Boolean).join(' ');
   }
-</file>
-
-<file path="postcss.config.js">
-module.exports = {
-    plugins: [
-      require('@tailwindcss/postcss'),
-      require('autoprefixer'),
-    ],
-  }
-</file>
-
-<file path="app/globals.css">
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-</file>
-
-<file path="app/layout.tsx">
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'AI+教育创新实践 | TPACK框架探索',
-  description: '一个使用Next.js 13 + Tailwind + shadcn/ui的示例项目',
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="zh">
-      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
-        {children}
-      </body>
-    </html>
-  )
-}
-</file>
-
-<file path="app/page.tsx">
-'use client'
-
-import { useState } from 'react'
-import { slides } from '@/lib/slides'
-import SlideCard from '@/components/SlideCard'
-
-export default function HomePage() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : slides.length - 1))
-  }
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev < slides.length - 1 ? prev + 1 : 0))
-  }
-
-  return (
-    <main className="container mx-auto p-4 flex flex-col items-center">
-      <h1 className="text-3xl font-bold text-primary mb-4">AI+教育创新实践</h1>
-      
-      {/* 只渲染当前索引的 SlideCard */}
-      <div className="w-full max-w-xl">
-        <SlideCard slide={slides[currentIndex]} />
-      </div>
-
-      {/* 控制按钮 */}
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={handlePrev}
-          className="px-4 py-2 bg-secondary text-white rounded-md hover:opacity-80"
-        >
-          上一页
-        </button>
-        <button
-          onClick={handleNext}
-          className="px-4 py-2 bg-primary text-white rounded-md hover:opacity-80"
-        >
-          下一页
-        </button>
-      </div>
-    </main>
-  )
-}
 </file>
 
 <file path="public/file.svg">
@@ -527,6 +669,470 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 </file>
 
+<file path="postcss.config.js">
+module.exports = {
+    plugins: {
+      '@tailwindcss/postcss': {},
+      autoprefixer: {},
+    },
+  }
+</file>
+
+<file path="tailwind.config.js">
+module.exports = {
+    content: [
+      "./src/**/*.{js,jsx,ts,tsx}",
+      "./pages/**/*.{js,jsx,ts,tsx}",
+      "./components/**/*.{js,jsx,ts,tsx}",
+      // 视项目情况添加更多需要扫描的目录
+    ],
+    theme: {
+      extend: {},
+    },
+    plugins: [],
+  }
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #2563eb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primary: #3b82f6;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', 'Geist Sans', Arial, Helvetica, sans-serif;
+  @apply antialiased;
+}
+
+/* Optional: Add some smooth scrolling and transition effects */
+* {
+  scroll-behavior: smooth;
+  transition: all 0.3s ease;
+}
+</file>
+
+<file path="app/layout.tsx">
+import './globals.css'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'AI+教育创新实践 | TPACK框架探索',
+  description: 'Presentation',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="zh">
+      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
+        {children}
+      </body>
+    </html>
+  )
+}
+</file>
+
+<file path="app/page.tsx">
+'use client'
+import { useState } from 'react'
+import { slides } from '@/lib/slides'
+import SlideCard from '@/components/SlideCard'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+export default function HomePage() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : slides.length - 1))
+  }
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev < slides.length - 1 ? prev + 1 : 0))
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col justify-center items-center p-6">
+      <div 
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden"
+        style={{ 
+          width: '1400px', 
+          height: '1000px',
+          maxWidth: '95vw',
+          maxHeight: '95vh'
+        }}
+      >
+        {/* Header */}
+        <div className="bg-blue-600 text-white py-4 px-6">
+          <h1 className="text-2xl font-bold text-center">
+            AI+教育创新实践
+          </h1>
+        </div>
+
+        {/* Slide Container with Navigation */}
+        <div className="relative h-[calc(100%-64px)] flex items-center justify-center">
+          {/* Previous Button */}
+          <button 
+            onClick={handlePrev} 
+            className="absolute left-4 z-10 bg-white/60 hover:bg-white/80 rounded-full p-2 shadow-md transition-all duration-300"
+          >
+            <ChevronLeft className="w-10 h-10 text-blue-700" />
+          </button>
+
+          {/* Slide Content */}
+          <div className="w-full h-full p-6">
+            <div className="h-full border-2 border-blue-100 rounded-xl overflow-hidden">
+              <SlideCard slide={slides[currentIndex]} />
+            </div>
+          </div>
+
+          {/* Next Button */}
+          <button 
+            onClick={handleNext} 
+            className="absolute right-4 z-10 bg-white/60 hover:bg-white/80 rounded-full p-2 shadow-md transition-all duration-300"
+          >
+            <ChevronRight className="w-10 h-10 text-blue-700" />
+          </button>
+        </div>
+
+        {/* Slide Indicator */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {slides.map((_, index) => (
+            <span 
+              key={index} 
+              className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'bg-blue-600 w-6' : 'bg-blue-300'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="components/SlideCard.tsx">
+import { Slide } from '@/lib/slides'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React from 'react'
+import { motion } from 'framer-motion'
+
+// Define layout types
+type LayoutType = 'default' | 'two-column' | 'narrative' | 'summary' | 'contrast'
+
+// Animated Bullet Renderer (from previous implementation)
+function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.2,
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
+      },
+    },
+  }
+
+  return (
+    <motion.ul 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="list-disc list-inside text-gray-800 space-y-3"
+    >
+      {bullets.map((item, index) => {
+        if (typeof item === 'string') {
+          return (
+            <motion.li 
+              key={index} 
+              variants={itemVariants}
+              className="text-base leading-relaxed hover:bg-blue-50/30 p-2 rounded-lg transition-all duration-300 ease-in-out"
+            >
+              {item}
+            </motion.li>
+          )
+        } else {
+          return (
+            <motion.li 
+              key={index} 
+              variants={itemVariants}
+              className="text-base leading-relaxed hover:bg-blue-50/30 p-2 rounded-lg transition-all duration-300 ease-in-out"
+            >
+              {item.bullet}
+              {item.subBullets && (
+                <motion.ul 
+                  variants={containerVariants}
+                  className="list-disc list-inside ml-5 text-sm text-gray-700 space-y-2 mt-2"
+                >
+                  {item.subBullets.map((sub, subIndex) => (
+                    <motion.li 
+                      key={subIndex} 
+                      variants={itemVariants}
+                      className="hover:bg-blue-50/30 p-1 rounded transition-all duration-300 ease-in-out"
+                    >
+                      {sub}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              )}
+            </motion.li>
+          )
+        }
+      })}
+    </motion.ul>
+  )
+}
+
+// Default layout - most common layout
+function DefaultLayout({ slide }: { slide: Slide }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-4"
+    >
+      <h3 className="font-semibold text-xl text-gray-900 mb-3 border-b pb-2">
+        {slide.content.heading}
+      </h3>
+      <AnimatedBulletRenderer bullets={slide.content.bullets} />
+    </motion.div>
+  )
+}
+
+// Two-column layout for complex content
+function TwoColumnLayout({ slide }: { slide: Slide }) {
+  // Split all bullet items (whether string or object) into two columns
+  const bullets = slide.content.bullets;
+  const half = Math.ceil(bullets.length / 2);
+  const leftBullets = bullets.slice(0, half);
+  const rightBullets = bullets.slice(half);
+
+  return (
+    <div className="grid grid-cols-2 gap-6 p-4">
+      <div>
+        <AnimatedBulletRenderer bullets={leftBullets} />
+      </div>
+      <div>
+        <AnimatedBulletRenderer bullets={rightBullets} />
+      </div>
+    </div>
+  )
+}
+
+// Narrative layout for storytelling slides
+function NarrativeLayout({ slide }: { slide: Slide }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6 text-center"
+    >
+      <h3 className="font-bold text-2xl text-blue-800 mb-4">
+        {slide.content.heading}
+      </h3>
+      <div className="space-y-3">
+        <AnimatedBulletRenderer bullets={slide.content.bullets} />
+      </div>
+    </motion.div>
+  )
+}
+
+// Summary layout for overview and conclusion slides
+function SummaryLayout({ slide }: { slide: Slide }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-blue-50 p-6 rounded-lg"
+    >
+      <h3 className="font-semibold text-xl text-blue-900 mb-4 border-b pb-2">
+        {slide.content.heading}
+      </h3>
+      <AnimatedBulletRenderer bullets={slide.content.bullets} />
+    </motion.div>
+  )
+}
+
+// Contrast layout for comparison slides with alternating colors
+function ContrastLayout({ slide }: { slide: Slide }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-4"
+    >
+      <h3 className="font-semibold text-xl text-gray-900 mb-3 border-b pb-2">
+        {slide.content.heading}
+      </h3>
+      <div className="grid grid-cols-2 gap-6">
+        {slide.content.bullets.map((item, index) => {
+          // Alternate background and text colors for contrast.
+          const bgClass = index % 2 === 0 ? "bg-blue-100" : "bg-yellow-100";
+          const textClass = index % 2 === 0 ? "text-blue-900" : "text-yellow-900";
+          return (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              className={`${bgClass} p-4 rounded-lg shadow-md hover:opacity-80 transition`}
+            >
+              {typeof item === 'object' ? (
+                <>
+                  <h4 className={`font-semibold text-lg mb-3 ${textClass}`}>
+                    {item.bullet}
+                  </h4>
+                  {item.subBullets && (
+                    <ul className="list-disc list-inside space-y-2">
+                      {item.subBullets.map((sub, subIndex) => (
+                        <li key={subIndex} className="text-base">
+                          {sub}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : (
+                <p className={`font-semibold text-lg ${textClass}`}>{item}</p>
+              )}
+            </motion.div>
+          )
+        })}
+      </div>
+    </motion.div>
+  )
+}
+
+// Mapping of special layout rendering functions
+const layoutRenderers: Record<LayoutType, React.FC<{ slide: Slide }>> = {
+  default: DefaultLayout,
+  'two-column': TwoColumnLayout,
+  'narrative': NarrativeLayout,
+  'summary': SummaryLayout,
+  'contrast': ContrastLayout,
+}
+
+// Determine layout based on slide properties and content.
+// First, use the layout defined in the slide data (if any).
+function determineLayout(slide: Slide): LayoutType {
+  if (slide.content.layout) return slide.content.layout as LayoutType;
+  // Special layout logic based on slide content
+  if (slide.id === 1) return 'narrative' // Cover slide
+  if (slide.id === 2) return 'summary' // Agenda slide
+  if (slide.id === 13 || slide.id === 18) return 'summary' // Overview and summary slides
+  if (slide.id >= 14 && slide.id <= 17) return 'contrast' // Comparison slides
+  if (slide.content.bullets.some(item =>
+    typeof item === 'object' &&
+    'subBullets' in item &&
+    item.subBullets &&
+    item.subBullets.length > 2
+  )) return 'two-column'
+  return 'default'
+}
+
+export default function SlideCard({ slide }: { slide: Slide }) {
+  const layoutType = determineLayout(slide)
+  const LayoutComponent = layoutRenderers[layoutType]
+
+  return (
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0.8 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
+      <Card className="border border-blue-100 shadow-2xl hover:shadow-3xl transform transition duration-300 w-full h-full overflow-hidden">
+        <CardHeader className="bg-blue-50/50 p-4 border-b border-blue-100">
+          <CardTitle className="text-blue-800 text-2xl font-bold tracking-tight">
+            {slide.title}
+          </CardTitle>
+        </CardHeader>
+        {slide.images && slide.images.length > 0 && (
+          <div className="w-full p-4">
+            <img src={slide.images[0]} alt={slide.title} className="mx-auto" />
+          </div>
+        )}
+        <CardContent className="p-6 space-y-4 overflow-y-auto max-h-[720px]">
+          <LayoutComponent slide={slide} />
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
+}
+</file>
+
 <file path="package.json">
 {
   "name": "ai-education-ppt",
@@ -561,14 +1167,6 @@ export default nextConfig;
     "typescript": "^5"
   }
 }
-</file>
-
-<file path="postcss.config.mjs">
-const config = {
-  plugins: ["@tailwindcss/postcss"],
-};
-
-export default config;
 </file>
 
 <file path="README.md">
@@ -608,36 +1206,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-</file>
-
-<file path="tsconfig.json">
-{
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./*"]
-    }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
-}
+# edtech_presentation
 </file>
 
 </files>

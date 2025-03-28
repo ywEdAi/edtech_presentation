@@ -20,8 +20,8 @@ export default function HomePage() {
       <div 
         className="bg-white rounded-2xl shadow-2xl overflow-hidden"
         style={{ 
-          width: '1200px', 
-          height: '800px',
+          width: '1400px', 
+          height: '1000px',
           maxWidth: '95vw',
           maxHeight: '95vh'
         }}

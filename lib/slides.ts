@@ -25,14 +25,11 @@ export type Slide = {
           heading: '独立开发与小团队在 AI+教育中的创新实践',
           layout: 'narrative', // Explicitly set layout for cover slide
           bullets: [
-            {
-              bullet: '标题：独立开发与小团队在 AI+教育中的创新实践',
-              subBullets: ['技术 × 教育学：用 TPACK 框架赋能生成式 AI 时代'],
-            },
+            '技术 × 教育学：用 TPACK 框架赋能生成式 AI 时代',
             '从产品开发模式到"知识审美"的教育思考',
             {
               bullet: '伊伊子',
-              subBullets: [''],
+              subBullets: ['小红书', '公众号', 'Youtube'],
             },
           ],
         },
@@ -67,7 +64,7 @@ export type Slide = {
       },
     {
       id: 3,
-      title: '：AI 与教育的交汇',
+      title: 'AI 与教育的交汇',
       content: {
         heading: '',
         bullets: [
@@ -103,9 +100,11 @@ export type Slide = {
             ],
           },
           '核心理念：三者交融，共同构建有深度且有温度的教育应用',
-          '示例图：\n┌─────────┐\n│ TPACK   │\n└─────────┘\n   /  \\\n  /    \\\nPCK（教学法+内容）   TPK（技术+教学法）\n   \\    /\n    \\  /\n TCK（技术+内容）',
+          
         ],
       },
+      images: ["/public/TPACK.png"]
+      
     },
     {
       id: 5,
@@ -156,6 +155,7 @@ export type Slide = {
       title: '产品开发关键模式 (2)：小团队 vs. 大团队',
       content: {
         heading: '',
+        layout: 'contrast', 
         bullets: [
           {
             bullet: '小团队/创业公司：',
@@ -255,6 +255,7 @@ export type Slide = {
       title: '知识审美：AI 时代的教育哲思',
       content: {
         heading: '',
+        layout: 'summary', 
         bullets: [
           '核心问题：当 AI 可批量生成信息时，人类为何还要学习？',
           {

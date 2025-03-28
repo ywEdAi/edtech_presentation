@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'AI+教育创新实践 | TPACK框架探索',
-  description: '一个使用Next.js 13 + Tailwind + shadcn/ui的示例项目',
+  description: 'Presentation',
 }
 
 export default function RootLayout({
