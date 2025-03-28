@@ -72,7 +72,9 @@ function AnimatedBulletRenderer({ bullets }: { bullets: any[] }) {
                   variants={containerVariants}
                   className="list-disc list-inside ml-5 text-sm text-gray-700 space-y-2 mt-2"
                 >
-                  {item.subBullets.map((sub, subIndex) => (
+                  {
+                    //@ts-ignore
+                  item.subBullets.map((sub, subIndex) => (
                     <motion.li 
                       key={subIndex} 
                       variants={itemVariants}
