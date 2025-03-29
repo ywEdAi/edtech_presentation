@@ -29,7 +29,7 @@ export type Slide = {
             '从产品开发模式到"知识审美"的教育思考',
             {
               bullet: '伊伊子',
-              subBullets: ['小红书', '公众号', 'Youtube'],
+              subBullets: ['小红书/公众号/Youtube:爱思考的伊伊子','小宇宙/Apple Podcast/Spotify: 教育AI智造者'],
             },
           ],
         },
@@ -89,7 +89,7 @@ export type Slide = {
       id: 4,
       title: '技术与教育学的结合：TPACK 框架',
       content: {
-        heading: '主要展示内容',
+        heading: '',
         bullets: [
           {
             bullet: 'TPACK 三大核心要素：',
@@ -103,7 +103,7 @@ export type Slide = {
           
         ],
       },
-      images: ["/public/TPACK.png"]
+      images: ["public/TPACK.png"]
       
     },
     {
@@ -113,7 +113,7 @@ export type Slide = {
         heading: '',
         bullets: [
           {
-            bullet: 'GenAI 应用场景：',
+            bullet: 'GenAI 应用场景',
             subBullets: [
               '对话式大模型 + 教学设计（利用 Prompt Engineering 与思维链实现启发式引导）',
               '知识图谱 + 学科概念（降低大模型“幻觉”，确保知识准确性）',
@@ -125,10 +125,37 @@ export type Slide = {
       },
     },
     {
-      id: 6,
-      title: '产品开发关键模式 (1)：技术驱动 vs. 数据驱动',
+        id: 6,
+        title: '产品开发关键模式 (1)：个人需求驱动 vs. 市场调研驱动',
+        content: {
+          heading: '真实痛点最终回归教育本质',
+          layout: 'contrast', 
+          bullets: [
+            {
+              bullet: '个人需求驱动：',
+              subBullets: [
+                '基于创始人自身痛点（教师、家长、学生）开发',
+                '使命感强，贴合真实场景',
+                '风险：易局限于小圈子，存在自嗨式开发',
+              ],
+            },
+            {
+              bullet: '市场调研驱动：',
+              subBullets: [
+                '依靠广泛用户反馈与数据验证',
+                '确保产品与市场契合（PMF）',
+                '风险：投入大，验证周期长',
+              ],
+            }
+          ],
+        },
+      },
+    {
+      id: 7,
+      title: '产品开发关键模式 (2)：技术驱动 vs. 数据驱动',
       content: {
-        heading: '',
+        heading: '技术引领与数据决策：创新模式的抉择',
+        layout: 'contrast', 
         bullets: [
           {
             bullet: '技术驱动：',
@@ -151,10 +178,10 @@ export type Slide = {
       },
     },
     {
-      id: 7,
-      title: '产品开发关键模式 (2)：小团队 vs. 大团队',
+      id: 8,
+      title: '产品开发关键模式 (3)：小团队 vs. 大团队',
       content: {
-        heading: '',
+        heading: '从灵活迭代到资源整合：不同规模战略的博弈',
         layout: 'contrast', 
         bullets: [
           {
@@ -178,32 +205,7 @@ export type Slide = {
         ],
       },
     },
-    {
-      id: 8,
-      title: '产品开发关键模式 (3)：个人需求驱动 vs. 市场调研驱动',
-      content: {
-        heading: '',
-        bullets: [
-          {
-            bullet: '个人需求驱动：',
-            subBullets: [
-              '基于创始人自身痛点（教师、家长、学生）开发',
-              '使命感强，贴合真实场景',
-              '风险：易局限于小圈子，存在自嗨式开发',
-            ],
-          },
-          {
-            bullet: '市场调研驱动：',
-            subBullets: [
-              '依靠广泛用户反馈与数据验证',
-              '确保产品与市场契合（PMF）',
-              '风险：投入大，验证周期长',
-            ],
-          },
-          '要点：真实痛点最终回归教育本质',
-        ],
-      },
-    },
+ 
     {
       id: 9,
       title: '“套壳”产品：短期效应 vs. 长期价值',
@@ -312,7 +314,7 @@ export type Slide = {
         id: 14,
         title: ' (1) 乐观者 vs. 悲观者',
         content: {
-          heading: '',
+          heading: '平衡点：怀抱激情同时保持清醒，先做 Demo，再迭代优化',
           layout: 'contrast', // Explicitly set layout for comparison slide
           bullets: [
             {
@@ -322,8 +324,7 @@ export type Slide = {
             {
               bullet: '悲观者：',
               subBullets: ['担心 AI 让学生失去独立思考，教师被替代', '策略："问题太多，也懒得折腾"'],
-            },
-            '平衡点：怀抱激情同时保持清醒，先做 Demo，再迭代优化',
+            }
           ],
         },
       },
@@ -331,7 +332,7 @@ export type Slide = {
       id: 15,
       title: '(2) Researcher vs. Engineer',
       content: {
-        heading: '',
+        heading: '互补优势：研究者提供可信度，工程师促使成果落地规模化',
         bullets: [
           {
             bullet: '研究者：',
@@ -340,8 +341,7 @@ export type Slide = {
           {
             bullet: '工程师：',
             subBullets: ['关注用户留存与商业可行性，追求快速上线', '接受一定混沌与不完美'],
-          },
-          '互补优势：研究者提供可信度，工程师促使成果落地规模化',
+          }
         ],
       },
     },
@@ -349,7 +349,8 @@ export type Slide = {
       id: 16,
       title: '(3) 痛苦教育 vs. 快乐教育',
       content: {
-        heading: '',
+        heading: 'AI 的作用：解放重复劳动，激发思维创新，同时防范“一键作业”风险',
+        layout:'contrast',
         bullets: [
           {
             bullet: '痛苦教育：',
@@ -358,11 +359,7 @@ export type Slide = {
           {
             bullet: '快乐教育：',
             subBullets: ['强调兴趣激发、游戏化与项目式学习', '但无挑战则学习深度受限'],
-          },
-          {
-            bullet: 'AI 的作用：',
-            subBullets: ['替代重复劳动，让师生专注于思维创新', '同时需监管以防“一键作业”'],
-          },
+          }
         ],
       },
     },
@@ -370,7 +367,7 @@ export type Slide = {
       id: 17,
       title: '(4) 黑暗森林法则：低调潜行 vs. 借势爆发',
       content: {
-        heading: '',
+        heading: '关键：审时度势，既保护核心技术又注重开放合作',
         bullets: [
           {
             bullet: '低调潜行：',
@@ -379,8 +376,7 @@ export type Slide = {
           {
             bullet: '借势爆发：',
             subBullets: ['高调宣传抢占市场、吸引投资与用户', '符合教育公益属性，助力更多师生'],
-          },
-          '关键：审时度势，既保护核心技术又注重开放合作',
+          }
         ],
       },
     },
